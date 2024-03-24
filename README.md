@@ -1,5 +1,4 @@
 0. OS Logistics:
-================
 0.1 Development environment: 
 Description:	Ubuntu 22.04.2 LTS
 Release:	22.04
@@ -11,7 +10,6 @@ kernel: 5.19.0-46-generic
 0.3 sudo permissions is needed for some of the actions.
 
 1. Installing Docker on development machine:
-============================================
 1.1 Docker version:
 1.1.1 Client: Docker Engine - Community
  Version:           26.0.0
@@ -26,7 +24,6 @@ kernel: 5.19.0-46-generic
 
 
 2. Development wise host logistics:
-==================================
 2.1 Installed python3 venv
 $ sudo apt install python3.10-venv
 
@@ -36,7 +33,6 @@ $ sudo apt install curl
 
 
 3. Install and run the application:
-===================================
 3.1 Clone the repo from GitHub
 
 3.2 cd to the project's root folder: openSourceIntServer (might be also opensourceintserver)
@@ -66,7 +62,6 @@ you need to change it in the configuration file of the application (see later se
 
 
 4. Install for development:
-===========================
 4.1 Follow steps 3.1 and 3.2 as above
 
 4.2 Create a virtual environment for the project to run in:
@@ -83,7 +78,6 @@ env (i.e. - /full/path/to/openSourceIntServer/openSourceQueryProjectSrc_env/bin/
 
 
 5. Application settings (configuration):
-========================================
 5.1 Under the root folder of the project there is the configuration file of the server named: openSourceIntSystemConfigurationFile.json
 
 5.2 Caching tunning:
