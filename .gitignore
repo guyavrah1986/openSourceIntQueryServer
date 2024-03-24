@@ -1,0 +1,4 @@
+*.pyc
+.idea/
+openSourceQueryProjectSrc.egg-info/
+openSourceQueryProjectSrc_env/

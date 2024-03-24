@@ -1,0 +1,28 @@
+{
+  "servers":
+  {
+    "bgview":
+    {
+      "protocol": "https",
+      "url": "api.bgpview.io/ip/"
+    },
+    "ip-api":
+    {
+      "protocol": "http",
+      "url": "ip-api.com/json/"
+    }
+  },
+  "cacheManager":
+  {
+    "maxNumOfItemsInCache": 100,
+    "maxDurationOfItemInCacheSeconds": 3600
+  },
+  "reqeustHandler":
+  {
+    "maxReqTimeOutSeconds": 2
+  },
+  "localHttpServerInfo":
+  {
+    "port": 8080
+  }
+}
