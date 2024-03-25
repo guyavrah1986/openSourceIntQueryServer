@@ -1,7 +1,7 @@
 {
   "servers":
   {
-    "bgview":
+    "bgpview":
     {
       "protocol": "https",
       "url": "api.bgpview.io/ip/"
@@ -10,6 +10,11 @@
     {
       "protocol": "http",
       "url": "ip-api.com/json/"
+    },
+    "iplocation":
+    {
+      "protocol": "https",
+      "url": "api.iplocation.net/?ip="
     }
   },
   "cacheManager":
