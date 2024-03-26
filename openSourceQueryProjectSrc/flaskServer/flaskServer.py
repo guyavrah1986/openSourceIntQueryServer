@@ -58,6 +58,9 @@ app = Flask(__name__)
 @app.route("/<ip>", methods=["GET"])
 async def get_handle(ip):
     valid_ip_list = utils_extract_ip_addresses(ip)
+    # In case any IP appears more than once, keep the list unique values
+    valid_ip_list = list(set(valid_ip_list))
+    MyLogger.log_to_std("after removal of duplications:" + str(valid_ip_list))
     MyLogger.log_to_std("the list of valid IP address got in the request is:" + str(valid_ip_list))
     status = 400
     if valid_ip_list:

@@ -1,12 +1,12 @@
 """
 This file is for testing purposes of all sort of stuff, code here is non-production
 """
-import asyncio
 from http.server import SimpleHTTPRequestHandler
 import socket
 import select
 import time
-
+import urllib.request
+from urllib.request import Request
 
 from openSourceQueryProjectSrc.utils.logger import MyLogger
 from openSourceQueryProjectSrc.httpOutBoundRequestHandler.httpOutBoundRequestHandler import HttpRequestQueryReturnValues
@@ -113,3 +113,100 @@ class MyHttpRequestHandler(SimpleHTTPRequestHandler):
 
         MyLogger.log_to_std("end")
 
+import asyncio
+from flask import Flask
+import json
+from flask import Response
+import sys
+from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
+
+
+loop = asyncio.get_event_loop()
+app = Flask(__name__)
+
+
+def thread_per_server(server_name: str):
+    # Create run loop for this thread and block until completion
+    MyLogger.log_to_std("executing thread work for server:" + server_name)
+
+
+def handle_get_dispatcher(ip: str):
+    """
+    This method initiate thread for every server present in the
+    server list. This way, all the queries to each server are
+    executed each in a different thread and within each of these
+    usage in asyncio function is done in order run tasks concurrently
+    """
+    MyLogger.log_to_std("starting dispatching threads to handle IP:" + ip)
+    thread_per_server_list = []
+    server_list = ["server-1, server-2", "server-3"]
+    thread_pool = ThreadPoolExecutor(len(server_list))
+    MyLogger.log_to_std("created thread pool executor with:" + str(len(server_list)) + " worker threads")
+    for server in server_list:
+        thread_per_server_list.append(thread_pool.submit(thread_per_server, server))
+
+    MyLogger.log_to_std("BEFORE calling wait on the list of threads")
+    wait(thread_per_server_list, timeout=None, return_when=ALL_COMPLETED)
+    MyLogger.log_to_std("AFTER calling wait on the list of threads")
+
+@app.route("/<ip>", methods=["GET"])
+async def get_handle(ip):
+    MyLogger.log_to_std("Got IP address in the request:" + str(ip))
+    handle_get_dispatcher(ip)
+    status = 400
+    dummy_reply = "reply for IP:" + str(ip)
+    """
+    if valid_ip_list:
+        reply = await handle_get_request(valid_ip_list)
+        MyLogger.log_to_std("return to client the following reply:" + str(reply).replace("\\", ""))
+        reply = json.dumps(str(reply).replace("\\", ""))
+        reply = json.loads(reply)
+        status = 200
+    else:
+        reply = utils_aggregate_result_from_all_requests(valid_ip_list)
+    """
+    reply = json.dumps(str(dummy_reply).replace("\\", ""))
+    reply = json.loads(reply)
+    response = Response(response=reply, status=status, mimetype="application/json")
+    response.headers["Content-Type"] = "application/json"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    MyLogger.log_to_std("about to return reponse:" + str(response)
+                        + " to query for IP:" + str(ip))
+    return response
+
+
+def run_flask_tmp(config_file: str):
+    local_http_server_listening_address = "0.0.0.0"
+    local_http_server_port = 8080
+    MyLogger.log_to_std("about to start HTTP server @ " + local_http_server_listening_address + ":"
+                        + str(local_http_server_port))
+    app.run(debug=True, host=local_http_server_listening_address, port=local_http_server_port, threaded=True)
+
+
+async def main():
+    MyLogger.log_to_std("----start----")
+    run_flask_tmp(sys.argv[1])
+    MyLogger.log_to_std("----end----")
+
+
+def test_func():
+    # https://api.iplocation.net/?ip=8.8.8.8
+    protocol = "https://"
+    url = "api.iplocation.net/?ip="
+    ip_address_to_query = "8.8.8.8"
+
+    request_url = protocol + url + ip_address_to_query
+    req = Request(url=request_url)
+    req.add_header("User-Agent", "Mozilla/5.0")
+    req_timeout_sec = 10
+    response = urllib.request.urlopen(req, timeout=req_timeout_sec)
+    return_code = response.getcode()
+    contents = response.read()
+    MyLogger.log_to_std("return code when requesting IP:" + ip_address_to_query + " is:" + str(return_code))
+
+
+if __name__ == "__main__":
+    print("===== start =====")
+    test_func()
+    # asyncio.run(main())
+    print("===== end =====")
